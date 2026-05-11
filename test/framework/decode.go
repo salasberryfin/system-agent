@@ -16,11 +16,9 @@ package framework
 
 import (
 	"bytes"
-	"compress/gzip"
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	"io"
 
 	"github.com/rancher/system-agent/pkg/applyinator"
 )
@@ -35,13 +33,7 @@ func DecodeOutput(encoded []byte) (string, error) {
 	}
 
 	// Step 1: Decompress gzip
-	reader, err := gzip.NewReader(bytes.NewReader(encoded))
-	if err != nil {
-		return "", err
-	}
-	defer reader.Close()
-
-	gzipResult, err := io.ReadAll(reader)
+	gzipResult, err := applyinator.GenerateByteBufferFromBytes(encoded)
 	if err != nil {
 		return "", err
 	}
@@ -77,13 +69,7 @@ func GetOutputMap(encoded []byte) (map[string]string, error) {
 		return nil, nil
 	}
 
-	reader, err := gzip.NewReader(bytes.NewReader(encoded))
-	if err != nil {
-		return nil, err
-	}
-	defer reader.Close()
-
-	gzipResult, err := io.ReadAll(reader)
+	gzipResult, err := applyinator.GenerateByteBufferFromBytes(encoded)
 	if err != nil {
 		return nil, err
 	}
@@ -112,13 +98,7 @@ func DecodePeriodicOutput(encoded []byte) (map[string]applyinator.PeriodicInstru
 		return nil, nil
 	}
 
-	reader, err := gzip.NewReader(bytes.NewReader(encoded))
-	if err != nil {
-		return nil, err
-	}
-	defer reader.Close()
-
-	gzipResult, err := io.ReadAll(reader)
+	gzipResult, err := applyinator.GenerateByteBufferFromBytes(encoded)
 	if err != nil {
 		return nil, err
 	}
