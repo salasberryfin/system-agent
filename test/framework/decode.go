@@ -33,7 +33,7 @@ func DecodeOutput(encoded []byte) (string, error) {
 	}
 
 	// Step 1: Decompress gzip
-	gzipResult, err := applyinator.GunzipBytes(encoded)
+	gzipResult, err := applyinator.GenerateByteBufferFromBytes(encoded)
 	if err != nil {
 		return "", err
 	}
@@ -69,7 +69,7 @@ func GetOutputMap(encoded []byte) (map[string]string, error) {
 		return nil, nil
 	}
 
-	gzipResult, err := applyinator.GunzipBytes(encoded)
+	gzipResult, err := applyinator.GenerateByteBufferFromBytes(encoded)
 	if err != nil {
 		return nil, err
 	}
@@ -98,7 +98,7 @@ func DecodePeriodicOutput(encoded []byte) (map[string]applyinator.PeriodicInstru
 		return nil, nil
 	}
 
-	gzipResult, err := applyinator.GunzipBytes(encoded)
+	gzipResult, err := applyinator.GenerateByteBufferFromBytes(encoded)
 	if err != nil {
 		return nil, err
 	}

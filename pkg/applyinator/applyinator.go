@@ -258,7 +258,7 @@ func (a *Applyinator) Apply(ctx context.Context, input ApplyInput) (ApplyOutput,
 		logrus.Infof("[Applyinator] Applying one-time instructions for plan with checksum %s", input.CalculatedPlan.Checksum)
 		executionOutputs := map[string][]byte{}
 		if len(input.ExistingOneTimeOutput) > 0 {
-			objectBuffer, err := GunzipBytes(input.ExistingOneTimeOutput)
+			objectBuffer, err := GenerateByteBufferFromBytes(input.ExistingOneTimeOutput)
 			if err != nil {
 				return output, err
 			}
@@ -295,7 +295,7 @@ func (a *Applyinator) Apply(ctx context.Context, input ApplyInput) (ApplyOutput,
 			return output, err
 		}
 
-		oneTimeApplyOutput, err := GzipBytes(marshalledExecutionOutputs)
+		oneTimeApplyOutput, err := GzipByteSlice(marshalledExecutionOutputs)
 		if err != nil {
 			return output, err
 		}
@@ -305,7 +305,7 @@ func (a *Applyinator) Apply(ctx context.Context, input ApplyInput) (ApplyOutput,
 
 	periodicOutputs := map[string]PeriodicInstructionOutput{}
 	if len(input.ExistingPeriodicOutput) > 0 {
-		objectBuffer, err := GunzipBytes(input.ExistingPeriodicOutput)
+		objectBuffer, err := GenerateByteBufferFromBytes(input.ExistingPeriodicOutput)
 		if err != nil {
 			return output, err
 		}
@@ -401,7 +401,7 @@ func (a *Applyinator) Apply(ctx context.Context, input ApplyInput) (ApplyOutput,
 	if err != nil {
 		return output, err
 	}
-	periodicApplyOutput, err := GzipBytes(marshalledExecutionOutputs)
+	periodicApplyOutput, err := GzipByteSlice(marshalledExecutionOutputs)
 	if err != nil {
 		return output, err
 	}
@@ -410,8 +410,8 @@ func (a *Applyinator) Apply(ctx context.Context, input ApplyInput) (ApplyOutput,
 	return output, nil
 }
 
-// GzipBytes compresses input using gzip and returns the compressed bytes.
-func GzipBytes(input []byte) ([]byte, error) {
+// GzipByteSlice compresses input using gzip and returns the compressed bytes.
+func GzipByteSlice(input []byte) ([]byte, error) {
 	var gzOutput bytes.Buffer
 
 	gzWriter := gzip.NewWriter(&gzOutput)
@@ -426,8 +426,8 @@ func GzipBytes(input []byte) ([]byte, error) {
 	return gzOutput.Bytes(), nil
 }
 
-// GunzipBytes decompresses gzip-compressed input and returns the raw bytes.
-func GunzipBytes(input []byte) ([]byte, error) {
+// GenerateByteBufferFromBytes decompresses gzip-compressed input and returns the raw bytes.
+func GenerateByteBufferFromBytes(input []byte) ([]byte, error) {
 	gzReader, err := gzip.NewReader(bytes.NewBuffer(input))
 	if err != nil {
 		return nil, err
